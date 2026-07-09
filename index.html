@@ -754,29 +754,60 @@
     });
   }
 
-  function formatRecentTime(value) {
-    if (!value) return "";
+function pad2(n) {
+  return String(n).padStart(2, "0");
+}
 
-    const date = new Date(value);
+function formatRecentTime(value) {
+  if (value === null || value === undefined || value === "") return "";
 
-    if (!Number.isNaN(date.getTime())) {
-      return date.toLocaleTimeString("th-TH", {
-        hour: "2-digit",
-        minute: "2-digit",
-        timeZone: "Asia/Bangkok"
-      });
-    }
-
-    const text = String(value);
-    const match = text.match(/(\d{1,2}):(\d{2})/);
-
-    if (match) {
-      return `${match[1].padStart(2, "0")}:${match[2]}`;
-    }
-
-    return text;
+  // กรณี Google Sheets ส่งเวลาเป็นเลข เช่น 0.625 = 15:00
+  if (typeof value === "number") {
+    const totalMinutes = Math.round(value * 24 * 60);
+    const hours = Math.floor(totalMinutes / 60) % 24;
+    const minutes = totalMinutes % 60;
+    return `${pad2(hours)}:${pad2(minutes)}`;
   }
 
+  const text = String(value).trim();
+
+  // กรณี Google Sheets ส่ง time-only กลับมาเป็น 1899-12-30T07:50:17.000Z
+  // ต้อง +7 ชั่วโมงกลับเป็นเวลาไทย
+  const sheetTimeMatch = text.match(/^1899-12-30T(\d{2}):(\d{2})(?::\d{2})?(?:\.\d+)?Z$/);
+
+  if (sheetTimeMatch) {
+    const hour = (Number(sheetTimeMatch[1]) + 7) % 24;
+    const minute = Number(sheetTimeMatch[2]);
+    return `${pad2(hour)}:${pad2(minute)}`;
+  }
+
+  // กรณีเป็นเวลาอยู่แล้ว เช่น 15:10 หรือ 15:10:00
+  const timeOnlyMatch = text.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+
+  if (timeOnlyMatch) {
+    return `${pad2(timeOnlyMatch[1])}:${timeOnlyMatch[2]}`;
+  }
+
+  // กรณีเป็นวันที่จริง เช่น 2026-07-09T08:10:00.000Z
+  const date = new Date(text);
+
+  if (!Number.isNaN(date.getTime())) {
+    return date.toLocaleTimeString("th-TH", {
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "Asia/Bangkok"
+    });
+  }
+
+  // fallback สุดท้าย ดึง HH:mm จากข้อความ
+  const anyTimeMatch = text.match(/(\d{1,2}):(\d{2})/);
+
+  if (anyTimeMatch) {
+    return `${pad2(anyTimeMatch[1])}:${anyTimeMatch[2]}`;
+  }
+
+  return text;
+}
   function cleanRecentItem(item) {
     const menu = item?.menu || item?.Menu || "";
     const rawPrice = item?.price ?? item?.Price ?? item?.amount ?? item?.Amount;
