@@ -38,16 +38,16 @@
   .brand{display:flex;flex-direction:column;align-items:center;gap:8px;}
   .brand img{height:92px;width:auto;display:block;object-fit:contain;}
   .brand-text{display:none;font-size:34px;font-weight:700;letter-spacing:0.02em;color:var(--brown);}
-  .brand .sub{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--brown-soft);font-weight:600;}
-  .clock{font-family:'DM Mono',monospace;font-size:13px;color:var(--brown-soft);}
+  .brand .sub{font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:var(--brown-soft);font-weight:600;}
+  .clock{font-family:'DM Mono',monospace;font-size:14px;color:var(--brown-soft);}
 
-  .sync-status{font-size:11px;padding:5px 10px;border-radius:999px;color:var(--brown-soft);background:var(--accent-soft);}
+  .sync-status{font-size:12px;padding:5px 10px;border-radius:999px;color:var(--brown-soft);background:var(--accent-soft);}
   .sync-status.ok{color:var(--success);background:var(--success-soft);}
   .sync-status.offline,.sync-status.pending{color:var(--danger);background:var(--danger-soft);}
   .sync-status.syncing{color:var(--accent);background:var(--accent-soft);}
 
   .tabs{display:flex;justify-content:center;gap:6px;margin:22px auto 28px;background:var(--accent-soft);border-radius:14px;padding:5px;max-width:360px;}
-  .tab-btn{flex:1;text-align:center;padding:10px 16px;border:none;border-radius:10px;background:transparent;color:var(--brown-soft);font-family:'Kanit',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s ease,color .15s ease;}
+  .tab-btn{flex:1;text-align:center;padding:10px 16px;border:none;border-radius:10px;background:transparent;color:var(--brown-soft);font-family:'Kanit',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:background .15s ease,color .15s ease;}
   .tab-btn.active{background:var(--card);color:var(--brown);box-shadow:0 1px 3px rgba(60,36,21,0.08);}
 
   .grid{display:grid;grid-template-columns:1fr;gap:20px;align-items:start;max-width:600px;margin:0 auto;}
@@ -55,19 +55,19 @@
   .view.active{display:block;}
 
   .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px 26px;}
-  .eyebrow{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:18px;}
+  .eyebrow{font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:18px;}
 
   .field{margin-bottom:18px;}
-  .field label{display:block;font-size:12px;color:var(--brown-soft);margin-bottom:7px;}
+  .field label{display:block;font-size:14px;color:var(--brown-soft);margin-bottom:7px;}
 
-  select{width:100%;appearance:none;-webkit-appearance:none;background:var(--bg);border:1px solid var(--line);color:var(--brown);font-family:'Kanit',sans-serif;font-size:17px;font-weight:500;padding:15px 40px 15px 16px;border-radius:14px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23B08655' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;cursor:pointer;}
+  select{width:100%;appearance:none;-webkit-appearance:none;background:var(--bg);border:1px solid var(--line);color:var(--brown);font-family:'Kanit',sans-serif;font-size:18px;font-weight:500;padding:15px 40px 15px 16px;border-radius:14px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23B08655' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;cursor:pointer;}
   select:focus{outline:2px solid var(--accent);outline-offset:1px;}
 
   .option-card{margin:4px 0 18px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--bg);}
   .check-row{display:flex;align-items:center;justify-content:space-between;gap:16px;cursor:pointer;user-select:none;}
   .check-copy{display:flex;flex-direction:column;gap:2px;}
-  .check-title{font-size:15px;font-weight:500;color:var(--brown);}
-  .check-sub{font-size:12px;color:var(--brown-soft);}
+  .check-title{font-size:16px;font-weight:500;color:var(--brown);}
+  .check-sub{display:none;}
   .check-toggle{position:relative;width:46px;height:28px;flex:0 0 auto;}
   .check-toggle input{opacity:0;width:0;height:0;}
   .slider{position:absolute;cursor:pointer;inset:0;background:#E9DECE;border-radius:999px;transition:.18s ease;}
@@ -76,36 +76,36 @@
   .check-toggle input:checked + .slider:before{transform:translateX(18px);}
 
   .price-row{display:flex;align-items:baseline;justify-content:space-between;background:var(--accent-soft);border-radius:14px;padding:18px 20px;margin-bottom:14px;}
-  .price-row .lbl{font-size:13px;color:var(--brown-soft);}
+  .price-row .lbl{font-size:14px;color:var(--brown-soft);}
   .price-row .amt{font-family:'DM Mono',monospace;font-size:30px;font-weight:500;color:var(--brown);}
 
   .preview{display:grid;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:22px;}
-  .preview-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
-  .preview-menu{font-size:15px;font-weight:600;color:var(--brown);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .badge{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:3px 9px;font-size:11px;font-weight:600;white-space:nowrap;background:var(--accent-soft);color:var(--accent);}
+  .preview-head{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .preview-menu{font-size:16px;font-weight:600;color:var(--brown);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .badge{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:3px 9px;font-size:12px;font-weight:600;white-space:nowrap;background:var(--accent-soft);color:var(--accent);}
   .badge.whey{background:var(--success-soft);color:var(--success);}
   .badge.nonwhey{background:var(--danger-soft);color:var(--danger);}
-  .preview-bottom{display:flex;justify-content:space-between;color:var(--brown-soft);font-size:12px;}
-  .preview-bottom span:last-child{font-family:'DM Mono',monospace;color:var(--brown);font-size:14px;}
+  .preview-bottom{display:flex;justify-content:space-between;color:var(--brown-soft);font-size:14px;}
+  .preview-bottom span:last-child{font-family:'DM Mono',monospace;color:var(--brown);font-size:16px;}
 
-  .save-btn{width:100%;padding:17px;border:none;border-radius:14px;background:var(--brown);color:#FBF7F2;font-family:'Kanit',sans-serif;font-size:17px;font-weight:500;letter-spacing:0.01em;cursor:pointer;transition:transform .12s ease,background .12s ease;}
+  .save-btn{width:100%;padding:17px;border:none;border-radius:14px;background:var(--brown);color:#FBF7F2;font-family:'Kanit',sans-serif;font-size:18px;font-weight:500;letter-spacing:0.01em;cursor:pointer;transition:transform .12s ease,background .12s ease;}
   .save-btn:active{transform:scale(0.98);}
   .save-btn:disabled{opacity:0.6;cursor:default;}
   .save-btn.saved{background:var(--success);}
   .save-btn.pending{background:var(--accent);}
 
-  .toast{margin-top:14px;font-size:13px;text-align:center;color:var(--brown-soft);min-height:18px;line-height:1.55;}
+  .toast{margin-top:14px;font-size:14px;text-align:center;color:var(--brown-soft);min-height:18px;line-height:1.55;}
   .toast.err{color:var(--danger);}
   .toast.ok{color:var(--success);}
 
   .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
-  .refresh{background:none;border:1px solid var(--line);color:var(--brown-soft);font-size:12px;padding:7px 14px;border-radius:20px;cursor:pointer;font-family:'Kanit',sans-serif;}
+  .refresh{background:none;border:1px solid var(--line);color:var(--brown-soft);font-size:13px;padding:7px 14px;border-radius:20px;cursor:pointer;font-family:'Kanit',sans-serif;}
   .refresh:hover{border-color:var(--accent);color:var(--brown);}
 
   .totals{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
   .totals .box{background:var(--bg);border-radius:14px;padding:16px 18px;}
   .totals .box .n{font-family:'DM Mono',monospace;font-size:25px;font-weight:500;}
-  .totals .box .l{font-size:11px;color:var(--brown-soft);letter-spacing:0.06em;text-transform:uppercase;margin-top:3px;}
+  .totals .box .l{font-size:12px;color:var(--brown-soft);letter-spacing:0.06em;text-transform:uppercase;margin-top:3px;}
   .totals .box.money{background:var(--accent-soft);}
   .totals .box.money .n{color:var(--accent);}
   .totals .box.nonwhey{background:var(--danger-soft);}
@@ -114,26 +114,26 @@
   .totals .box.whey .n{color:var(--success);}
 
   table{width:100%;border-collapse:collapse;margin-bottom:6px;}
-  th{text-align:left;font-size:11px;color:var(--brown-soft);text-transform:uppercase;letter-spacing:0.06em;padding:0 0 10px;font-weight:500;border-bottom:1px solid var(--line);}
+  th{text-align:left;font-size:12px;color:var(--brown-soft);text-transform:uppercase;letter-spacing:0.06em;padding:0 0 10px;font-weight:500;border-bottom:1px solid var(--line);}
   th.num,td.num{text-align:right;}
-  td{padding:12px 0;font-size:14px;border-bottom:1px solid var(--line);}
+  td{padding:12px 0;font-size:15px;border-bottom:1px solid var(--line);}
   td.menu{font-weight:500;}
   td.num{font-family:'DM Mono',monospace;}
   tr:last-child td{border-bottom:none;}
-  .empty{color:var(--brown-soft);font-size:13px;text-align:center;padding:24px 0;}
+  .empty{color:var(--brown-soft);font-size:14px;text-align:center;padding:24px 0;}
 
   .chart-wrap{display:flex;align-items:center;gap:22px;margin:22px 0 26px;padding:20px;background:var(--bg);border-radius:16px;}
   .chart-wrap svg{max-width:150px;max-height:150px;flex-shrink:0;}
   .legend{display:flex;flex-direction:column;gap:8px;flex:1;min-width:0;}
-  .legend-item{display:flex;align-items:center;gap:8px;font-size:13px;}
+  .legend-item{display:flex;align-items:center;gap:8px;font-size:14px;}
   .legend-item .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
   .legend-item .name{color:var(--brown);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .legend-item .pct{font-family:'DM Mono',monospace;color:var(--brown-soft);}
 
   .recent{margin-top:26px;}
   .recent .eyebrow{margin-bottom:12px;}
-  .recent-item{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;font-size:13px;padding:10px 0;border-bottom:1px solid var(--line);color:var(--brown-soft);}
-  .recent-left{display:flex;align-items:center;gap:8px;min-width:0;}
+  .recent-item{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;font-size:14px;padding:10px 0;border-bottom:1px solid var(--line);color:var(--brown-soft);}
+  .recent-left{display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden;}
   .recent-item .m{color:var(--brown);font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .recent-item .t{font-family:'DM Mono',monospace;white-space:nowrap;text-align:right;}
 
@@ -149,8 +149,8 @@
     body{padding-top:44px;}
     .brand img{height:100px;}
     .card{padding:32px 30px;}
-    select{font-size:19px;padding:17px 44px 17px 18px;}
-    .save-btn{font-size:18px;padding:19px;}
+    select{font-size:20px;padding:17px 44px 17px 18px;}
+    .save-btn{font-size:19px;padding:19px;}
   }
 </style>
 </head>
@@ -187,11 +187,19 @@
         </select>
       </div>
 
+      <div class="field">
+        <label>เพศ</label>
+        <select id="genderSelect">
+          <option value="ไม่ระบุ">ไม่ระบุ</option>
+          <option value="ชาย">ชาย</option>
+          <option value="หญิง">หญิง</option>
+        </select>
+      </div>
+
       <div class="option-card">
         <label class="check-row" for="nonWheyCheck">
           <div class="check-copy">
             <span class="check-title">Non-Whey Protein</span>
-            <span class="check-sub">ไม่บวกเงิน · บันทึกลง Google Sheet</span>
           </div>
           <span class="check-toggle">
             <input type="checkbox" id="nonWheyCheck">
@@ -208,6 +216,7 @@
       <div class="preview">
         <div class="preview-head">
           <span class="preview-menu" id="previewMenu">Gym Latte</span>
+          <span class="badge" id="previewGender">ไม่ระบุ</span>
           <span class="badge whey" id="previewProtein">Whey</span>
         </div>
         <div class="preview-bottom">
@@ -287,9 +296,11 @@
   const CHART_COLORS = ["#3C2415", "#B08655", "#8A6A50", "#6B8F71", "#B5484D", "#7A93A8"];
 
   const menuSelect = document.getElementById("menuSelect");
+  const genderSelect = document.getElementById("genderSelect");
   const nonWheyCheck = document.getElementById("nonWheyCheck");
   const priceDisplay = document.getElementById("priceDisplay");
   const previewMenu = document.getElementById("previewMenu");
+  const previewGender = document.getElementById("previewGender");
   const previewProtein = document.getElementById("previewProtein");
   const previewPrice = document.getElementById("previewPrice");
   const saveBtn = document.getElementById("saveBtn");
@@ -328,6 +339,10 @@
     return nonWheyCheck.checked ? "Non-Whey" : "Whey";
   }
 
+  function getGender(){
+    return genderSelect.value || "ไม่ระบุ";
+  }
+
   function proteinBadgeClass(type){
     return String(type).toLowerCase().includes("non") ? "nonwhey" : "whey";
   }
@@ -336,9 +351,11 @@
     const menu = menuSelect.value;
     const price = PRICES[menu] || 0;
     const proteinType = getProteinType();
+    const gender = getGender();
 
     priceDisplay.textContent = money(price);
     previewMenu.textContent = menu;
+    previewGender.textContent = gender;
     previewProtein.textContent = proteinType;
     previewProtein.className = "badge " + proteinBadgeClass(proteinType);
     previewPrice.textContent = money(price);
@@ -452,9 +469,10 @@
     const rawPrice = item?.price ?? item?.Price ?? item?.amount ?? item?.Amount;
     const price = toNumber(rawPrice) || PRICES[menu] || 0;
     const proteinType = item?.proteinType || item?.ProteinType || "Whey";
+    const gender = item?.gender || item?.Gender || "ไม่ระบุ";
     const rawTime = item?.time ?? item?.Time ?? item?.timestamp ?? item?.Timestamp ?? item?.createdAt;
 
-    return {menu, price, proteinType, time:formatRecentTime(rawTime)};
+    return {menu, price, proteinType, gender, time:formatRecentTime(rawTime)};
   }
 
   function renderSummary(data = {}){
@@ -499,6 +517,7 @@
           <div class="recent-item">
             <div class="recent-left">
               <span class="m">${item.menu}</span>
+              <span class="badge">${item.gender}</span>
               <span class="badge ${cls}">${item.proteinType}</span>
             </div>
             <span class="t">${timeText}${money(item.price)}</span>
@@ -581,6 +600,7 @@
       menu:order.menu,
       price:order.price,
       proteinType:order.proteinType,
+      gender:order.gender,
       clientOrderId:order.id,
       createdAt:order.createdAt
     };
@@ -654,12 +674,14 @@
     const menu = menuSelect.value;
     const price = PRICES[menu] || 0;
     const proteinType = getProteinType();
+    const gender = getGender();
 
     const order = {
       id:createId(),
       menu,
       price,
       proteinType,
+      gender,
       createdAt:new Date().toISOString()
     };
 
@@ -669,7 +691,7 @@
     toast.classList.remove("err", "ok");
     toast.textContent = "";
 
-    const orderText = `${menu} · ${proteinType} · ${money(price)}`;
+    const orderText = `${menu} · ${gender} · ${proteinType} · ${money(price)}`;
 
     if (!navigator.onLine) {
       addPendingOrder(order);
@@ -724,6 +746,7 @@
   });
 
   menuSelect.addEventListener("change", updateOrderPreview);
+  genderSelect.addEventListener("change", updateOrderPreview);
   nonWheyCheck.addEventListener("change", updateOrderPreview);
   saveBtn.addEventListener("click", saveOrder);
   refreshBtn.addEventListener("click", () => {syncPendingOrders();loadSummary();});
