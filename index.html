@@ -3,11 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
 <title>Gym Latte — POS</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-
 <style>
   :root{
     --brown:#3C2415;
@@ -23,11 +20,7 @@
     --danger-soft:#F8E8E8;
   }
 
-  *,*::before,*::after{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
   html,body{
     width:100%;
@@ -38,503 +31,137 @@
     -webkit-tap-highlight-color:transparent;
   }
 
-  body{
-    min-height:100vh;
-    padding:32px 24px 48px;
-  }
-
-  .wrap{
-    max-width:1040px;
-    margin:0 auto;
-  }
-
-  .topbar{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    margin-bottom:8px;
-    gap:10px;
-  }
-
-  .brand{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:8px;
-  }
-
-  .brand img{
-    height:92px;
-    width:auto;
-    display:block;
-    object-fit:contain;
-  }
-
-  .brand-text{
-    display:none;
-    font-size:34px;
-    font-weight:700;
-    letter-spacing:0.02em;
-    color:var(--brown);
-  }
-
-  .brand .sub{
-    font-size:11px;
-    letter-spacing:0.18em;
-    text-transform:uppercase;
-    color:var(--brown-soft);
-    font-weight:600;
-  }
-
-  .clock{
-    font-family:'DM Mono',monospace;
-    font-size:13px;
-    color:var(--brown-soft);
-  }
-
-  .sync-status{
-    font-size:11px;
-    padding:5px 10px;
-    border-radius:999px;
-    color:var(--brown-soft);
-    background:var(--accent-soft);
-  }
-
-  .sync-status.ok{
-    color:var(--success);
-    background:var(--success-soft);
-  }
-
-  .sync-status.offline,
-  .sync-status.pending{
-    color:var(--danger);
-    background:var(--danger-soft);
-  }
-
-  .sync-status.syncing{
-    color:var(--accent);
-    background:var(--accent-soft);
-  }
-
-  .tabs{
-    display:flex;
-    justify-content:center;
-    gap:6px;
-    margin:22px auto 28px;
-    background:var(--accent-soft);
-    border-radius:14px;
-    padding:5px;
-    max-width:360px;
-  }
-
-  .tab-btn{
-    flex:1;
-    text-align:center;
-    padding:10px 16px;
-    border:none;
-    border-radius:10px;
-    background:transparent;
-    color:var(--brown-soft);
-    font-family:'Kanit',sans-serif;
-    font-size:14px;
-    font-weight:500;
-    cursor:pointer;
-    transition:background .15s ease, color .15s ease;
-  }
-
-  .tab-btn.active{
-    background:var(--card);
-    color:var(--brown);
-    box-shadow:0 1px 3px rgba(60,36,21,0.08);
-  }
-
-  .grid{
-    display:grid;
-    grid-template-columns:1fr;
-    gap:20px;
-    align-items:start;
-    max-width:600px;
-    margin:0 auto;
-  }
-
-  .view{
-    display:none;
-  }
-
-  .view.active{
-    display:block;
-  }
-
-  .card{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:20px;
-    padding:28px 26px;
-  }
-
-  .eyebrow{
-    font-size:11px;
-    letter-spacing:0.16em;
-    text-transform:uppercase;
-    color:var(--accent);
-    font-weight:600;
-    margin-bottom:18px;
-  }
-
-  .field{
-    margin-bottom:18px;
-  }
-
-  .field label{
-    display:block;
-    font-size:12px;
-    color:var(--brown-soft);
-    margin-bottom:7px;
-  }
-
-  select{
-    width:100%;
-    appearance:none;
-    -webkit-appearance:none;
-    background:var(--bg);
-    border:1px solid var(--line);
-    color:var(--brown);
-    font-family:'Kanit',sans-serif;
-    font-size:17px;
-    font-weight:500;
-    padding:15px 40px 15px 16px;
-    border-radius:14px;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23B08655' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat:no-repeat;
-    background-position:right 16px center;
-    cursor:pointer;
-  }
-
-  select:focus{
-    outline:2px solid var(--accent);
-    outline-offset:1px;
-  }
-
-  .price-row{
-    display:flex;
-    align-items:baseline;
-    justify-content:space-between;
-    background:var(--accent-soft);
-    border-radius:14px;
-    padding:18px 20px;
-    margin-bottom:26px;
-  }
-
-  .price-row .lbl{
-    font-size:13px;
-    color:var(--brown-soft);
-  }
-
-  .price-row .amt{
-    font-family:'DM Mono',monospace;
-    font-size:30px;
-    font-weight:500;
-    color:var(--brown);
-  }
-
-  .save-btn{
-    width:100%;
-    padding:17px;
-    border:none;
-    border-radius:14px;
-    background:var(--brown);
-    color:#FBF7F2;
-    font-family:'Kanit',sans-serif;
-    font-size:17px;
-    font-weight:500;
-    letter-spacing:0.01em;
-    cursor:pointer;
-    transition:transform .12s ease, background .12s ease;
-  }
-
-  .save-btn:active{
-    transform:scale(0.98);
-  }
-
-  .save-btn:disabled{
-    opacity:0.6;
-    cursor:default;
-  }
-
-  .save-btn.saved{
-    background:var(--success);
-  }
-
-  .save-btn.pending{
-    background:var(--accent);
-  }
-
-  .toast{
-    margin-top:14px;
-    font-size:13px;
-    text-align:center;
-    color:var(--brown-soft);
-    min-height:18px;
-  }
-
-  .toast.err{
-    color:var(--danger);
-  }
-
-  .toast.ok{
-    color:var(--success);
-  }
-
-  .panel-head{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:20px;
-  }
-
-  .refresh{
-    background:none;
-    border:1px solid var(--line);
-    color:var(--brown-soft);
-    font-size:12px;
-    padding:7px 14px;
-    border-radius:20px;
-    cursor:pointer;
-    font-family:'Kanit',sans-serif;
-  }
-
-  .refresh:hover{
-    border-color:var(--accent);
-    color:var(--brown);
-  }
-
-  .totals{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
-    margin-bottom:24px;
-  }
-
-  .totals .box{
-    background:var(--bg);
-    border-radius:14px;
-    padding:16px 18px;
-  }
-
-  .totals .box .n{
-    font-family:'DM Mono',monospace;
-    font-size:25px;
-    font-weight:500;
-  }
-
-  .totals .box .l{
-    font-size:11px;
-    color:var(--brown-soft);
-    letter-spacing:0.06em;
-    text-transform:uppercase;
-    margin-top:3px;
-  }
-
-  .totals .box.money{
-    background:var(--accent-soft);
-  }
-
-  .totals .box.money .n{
-    color:var(--accent);
-  }
-
-  table{
-    width:100%;
-    border-collapse:collapse;
-    margin-bottom:6px;
-  }
-
-  th{
-    text-align:left;
-    font-size:11px;
-    color:var(--brown-soft);
-    text-transform:uppercase;
-    letter-spacing:0.06em;
-    padding:0 0 10px;
-    font-weight:500;
-    border-bottom:1px solid var(--line);
-  }
-
-  th.num,td.num{
-    text-align:right;
-  }
-
-  td{
-    padding:12px 0;
-    font-size:14px;
-    border-bottom:1px solid var(--line);
-  }
-
-  td.menu{
-    font-weight:500;
-  }
-
-  td.num{
-    font-family:'DM Mono',monospace;
-  }
-
-  tr:last-child td{
-    border-bottom:none;
-  }
-
-  .empty{
-    color:var(--brown-soft);
-    font-size:13px;
-    text-align:center;
-    padding:24px 0;
-  }
-
-  .chart-wrap{
-    display:flex;
-    align-items:center;
-    gap:22px;
-    margin:22px 0 26px;
-    padding:20px;
-    background:var(--bg);
-    border-radius:16px;
-  }
-
-  .chart-wrap svg{
-    max-width:150px;
-    max-height:150px;
-    flex-shrink:0;
-  }
-
-  .legend{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    flex:1;
-    min-width:0;
-  }
-
-  .legend-item{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    font-size:13px;
-  }
-
-  .legend-item .dot{
-    width:9px;
-    height:9px;
-    border-radius:50%;
-    flex-shrink:0;
-  }
-
-  .legend-item .name{
-    color:var(--brown);
-    flex:1;
-    min-width:0;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-  }
-
-  .legend-item .pct{
-    font-family:'DM Mono',monospace;
-    color:var(--brown-soft);
-  }
-
-  .recent{
-    margin-top:26px;
-  }
-
-  .recent .eyebrow{
-    margin-bottom:12px;
-  }
-
-  .recent-item{
-    display:grid;
-    grid-template-columns:1fr auto;
-    gap:14px;
-    align-items:center;
-    font-size:13px;
-    padding:10px 0;
-    border-bottom:1px solid var(--line);
-    color:var(--brown-soft);
-  }
-
-  .recent-item .m{
-    color:var(--brown);
-    font-weight:500;
-    min-width:0;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-  }
-
-  .recent-item .t{
-    font-family:'DM Mono',monospace;
-    white-space:nowrap;
-    text-align:right;
-  }
-
-  @media (max-width: 520px){
-    body{
-      padding:24px 16px 40px;
-    }
-
-    .card{
-      padding:24px 20px;
-    }
-
-    .brand img{
-      height:78px;
-    }
-
-    .chart-wrap{
-      flex-direction:column;
-      align-items:stretch;
-      gap:16px;
-    }
-
-    .chart-wrap svg{
-      align-self:center;
-    }
-  }
-
-  @media (min-width: 768px){
-    body{
-      padding-top:44px;
-    }
-
-    .brand img{
-      height:100px;
-    }
-
-    .card{
-      padding:32px 30px;
-    }
-
-    select{
-      font-size:19px;
-      padding:17px 44px 17px 18px;
-    }
-
-    .save-btn{
-      font-size:18px;
-      padding:19px;
-    }
+  body{min-height:100vh;padding:32px 24px 48px;}
+  .wrap{max-width:1040px;margin:0 auto;}
+
+  .topbar{display:flex;flex-direction:column;align-items:center;margin-bottom:8px;gap:10px;}
+  .brand{display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .brand img{height:92px;width:auto;display:block;object-fit:contain;}
+  .brand-text{display:none;font-size:34px;font-weight:700;letter-spacing:0.02em;color:var(--brown);}
+  .brand .sub{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--brown-soft);font-weight:600;}
+  .clock{font-family:'DM Mono',monospace;font-size:13px;color:var(--brown-soft);}
+
+  .sync-status{font-size:11px;padding:5px 10px;border-radius:999px;color:var(--brown-soft);background:var(--accent-soft);}
+  .sync-status.ok{color:var(--success);background:var(--success-soft);}
+  .sync-status.offline,.sync-status.pending{color:var(--danger);background:var(--danger-soft);}
+  .sync-status.syncing{color:var(--accent);background:var(--accent-soft);}
+
+  .tabs{display:flex;justify-content:center;gap:6px;margin:22px auto 28px;background:var(--accent-soft);border-radius:14px;padding:5px;max-width:360px;}
+  .tab-btn{flex:1;text-align:center;padding:10px 16px;border:none;border-radius:10px;background:transparent;color:var(--brown-soft);font-family:'Kanit',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s ease,color .15s ease;}
+  .tab-btn.active{background:var(--card);color:var(--brown);box-shadow:0 1px 3px rgba(60,36,21,0.08);}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:20px;align-items:start;max-width:600px;margin:0 auto;}
+  .view{display:none;}
+  .view.active{display:block;}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px 26px;}
+  .eyebrow{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:18px;}
+
+  .field{margin-bottom:18px;}
+  .field label{display:block;font-size:12px;color:var(--brown-soft);margin-bottom:7px;}
+
+  select{width:100%;appearance:none;-webkit-appearance:none;background:var(--bg);border:1px solid var(--line);color:var(--brown);font-family:'Kanit',sans-serif;font-size:17px;font-weight:500;padding:15px 40px 15px 16px;border-radius:14px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23B08655' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;cursor:pointer;}
+  select:focus{outline:2px solid var(--accent);outline-offset:1px;}
+
+  .option-card{margin:4px 0 18px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--bg);}
+  .check-row{display:flex;align-items:center;justify-content:space-between;gap:16px;cursor:pointer;user-select:none;}
+  .check-copy{display:flex;flex-direction:column;gap:2px;}
+  .check-title{font-size:15px;font-weight:500;color:var(--brown);}
+  .check-sub{font-size:12px;color:var(--brown-soft);}
+  .check-toggle{position:relative;width:46px;height:28px;flex:0 0 auto;}
+  .check-toggle input{opacity:0;width:0;height:0;}
+  .slider{position:absolute;cursor:pointer;inset:0;background:#E9DECE;border-radius:999px;transition:.18s ease;}
+  .slider:before{content:"";position:absolute;height:22px;width:22px;left:3px;top:3px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(60,36,21,.16);transition:.18s ease;}
+  .check-toggle input:checked + .slider{background:var(--brown);}
+  .check-toggle input:checked + .slider:before{transform:translateX(18px);}
+
+  .price-row{display:flex;align-items:baseline;justify-content:space-between;background:var(--accent-soft);border-radius:14px;padding:18px 20px;margin-bottom:14px;}
+  .price-row .lbl{font-size:13px;color:var(--brown-soft);}
+  .price-row .amt{font-family:'DM Mono',monospace;font-size:30px;font-weight:500;color:var(--brown);}
+
+  .preview{display:grid;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:22px;}
+  .preview-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .preview-menu{font-size:15px;font-weight:600;color:var(--brown);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .badge{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:3px 9px;font-size:11px;font-weight:600;white-space:nowrap;background:var(--accent-soft);color:var(--accent);}
+  .badge.whey{background:var(--success-soft);color:var(--success);}
+  .badge.nonwhey{background:var(--danger-soft);color:var(--danger);}
+  .preview-bottom{display:flex;justify-content:space-between;color:var(--brown-soft);font-size:12px;}
+  .preview-bottom span:last-child{font-family:'DM Mono',monospace;color:var(--brown);font-size:14px;}
+
+  .save-btn{width:100%;padding:17px;border:none;border-radius:14px;background:var(--brown);color:#FBF7F2;font-family:'Kanit',sans-serif;font-size:17px;font-weight:500;letter-spacing:0.01em;cursor:pointer;transition:transform .12s ease,background .12s ease;}
+  .save-btn:active{transform:scale(0.98);}
+  .save-btn:disabled{opacity:0.6;cursor:default;}
+  .save-btn.saved{background:var(--success);}
+  .save-btn.pending{background:var(--accent);}
+
+  .toast{margin-top:14px;font-size:13px;text-align:center;color:var(--brown-soft);min-height:18px;line-height:1.55;}
+  .toast.err{color:var(--danger);}
+  .toast.ok{color:var(--success);}
+
+  .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+  .refresh{background:none;border:1px solid var(--line);color:var(--brown-soft);font-size:12px;padding:7px 14px;border-radius:20px;cursor:pointer;font-family:'Kanit',sans-serif;}
+  .refresh:hover{border-color:var(--accent);color:var(--brown);}
+
+  .totals{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+  .totals .box{background:var(--bg);border-radius:14px;padding:16px 18px;}
+  .totals .box .n{font-family:'DM Mono',monospace;font-size:25px;font-weight:500;}
+  .totals .box .l{font-size:11px;color:var(--brown-soft);letter-spacing:0.06em;text-transform:uppercase;margin-top:3px;}
+  .totals .box.money{background:var(--accent-soft);}
+  .totals .box.money .n{color:var(--accent);}
+  .totals .box.nonwhey{background:var(--danger-soft);}
+  .totals .box.nonwhey .n{color:var(--danger);}
+  .totals .box.whey{background:var(--success-soft);}
+  .totals .box.whey .n{color:var(--success);}
+
+  table{width:100%;border-collapse:collapse;margin-bottom:6px;}
+  th{text-align:left;font-size:11px;color:var(--brown-soft);text-transform:uppercase;letter-spacing:0.06em;padding:0 0 10px;font-weight:500;border-bottom:1px solid var(--line);}
+  th.num,td.num{text-align:right;}
+  td{padding:12px 0;font-size:14px;border-bottom:1px solid var(--line);}
+  td.menu{font-weight:500;}
+  td.num{font-family:'DM Mono',monospace;}
+  tr:last-child td{border-bottom:none;}
+  .empty{color:var(--brown-soft);font-size:13px;text-align:center;padding:24px 0;}
+
+  .chart-wrap{display:flex;align-items:center;gap:22px;margin:22px 0 26px;padding:20px;background:var(--bg);border-radius:16px;}
+  .chart-wrap svg{max-width:150px;max-height:150px;flex-shrink:0;}
+  .legend{display:flex;flex-direction:column;gap:8px;flex:1;min-width:0;}
+  .legend-item{display:flex;align-items:center;gap:8px;font-size:13px;}
+  .legend-item .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .legend-item .name{color:var(--brown);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .legend-item .pct{font-family:'DM Mono',monospace;color:var(--brown-soft);}
+
+  .recent{margin-top:26px;}
+  .recent .eyebrow{margin-bottom:12px;}
+  .recent-item{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;font-size:13px;padding:10px 0;border-bottom:1px solid var(--line);color:var(--brown-soft);}
+  .recent-left{display:flex;align-items:center;gap:8px;min-width:0;}
+  .recent-item .m{color:var(--brown);font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .recent-item .t{font-family:'DM Mono',monospace;white-space:nowrap;text-align:right;}
+
+  @media (max-width:520px){
+    body{padding:24px 16px 40px;}
+    .card{padding:24px 20px;}
+    .brand img{height:78px;}
+    .chart-wrap{flex-direction:column;align-items:stretch;gap:16px;}
+    .chart-wrap svg{align-self:center;}
+  }
+
+  @media (min-width:768px){
+    body{padding-top:44px;}
+    .brand img{height:100px;}
+    .card{padding:32px 30px;}
+    select{font-size:19px;padding:17px 44px 17px 18px;}
+    .save-btn{font-size:18px;padding:19px;}
   }
 </style>
 </head>
-
 <body>
 <div class="wrap">
-
   <div class="topbar">
     <div class="brand">
-      <img src="logo.png" alt="Gym Latte" onerror="this.style.display='none'; document.querySelector('.brand-text').style.display='block';">
+      <img src="logo.png" alt="Gym Latte" onerror="this.style.display='none';document.querySelector('.brand-text').style.display='block';">
       <div class="brand-text">Gym Latte</div>
       <div class="sub">Point of Sale</div>
     </div>
-
     <div class="clock" id="clock">--:--:--</div>
     <div class="sync-status ok" id="syncStatus">พร้อมใช้งาน</div>
   </div>
@@ -545,7 +172,6 @@
   </div>
 
   <div class="grid">
-
     <div class="card view active" id="view-order">
       <div class="eyebrow">บันทึกออเดอร์</div>
 
@@ -561,9 +187,33 @@
         </select>
       </div>
 
+      <div class="option-card">
+        <label class="check-row" for="nonWheyCheck">
+          <div class="check-copy">
+            <span class="check-title">Non-Whey Protein</span>
+            <span class="check-sub">ไม่บวกเงิน · บันทึกลง Google Sheet</span>
+          </div>
+          <span class="check-toggle">
+            <input type="checkbox" id="nonWheyCheck">
+            <span class="slider"></span>
+          </span>
+        </label>
+      </div>
+
       <div class="price-row">
         <span class="lbl">ราคา</span>
         <span class="amt" id="priceDisplay">฿99</span>
+      </div>
+
+      <div class="preview">
+        <div class="preview-head">
+          <span class="preview-menu" id="previewMenu">Gym Latte</span>
+          <span class="badge whey" id="previewProtein">Whey</span>
+        </div>
+        <div class="preview-bottom">
+          <span>สรุปก่อนบันทึก</span>
+          <span id="previewPrice">฿99</span>
+        </div>
       </div>
 
       <button class="save-btn" id="saveBtn">บันทึกการขาย</button>
@@ -581,18 +231,23 @@
           <div class="n" id="totalCount">0</div>
           <div class="l">แก้วรวม</div>
         </div>
-
         <div class="box money">
           <div class="n" id="totalAmount">฿0</div>
           <div class="l">ยอดขายรวม</div>
+        </div>
+        <div class="box nonwhey">
+          <div class="n" id="nonWheyCount">0</div>
+          <div class="l">Non-Whey</div>
+        </div>
+        <div class="box whey">
+          <div class="n" id="wheyCount">0</div>
+          <div class="l">Whey</div>
         </div>
       </div>
 
       <div class="chart-wrap">
         <svg id="pieChart" viewBox="0 0 150 150" width="150" height="150"></svg>
-        <div class="legend" id="legend">
-          <div class="empty">—</div>
-        </div>
+        <div class="legend" id="legend"><div class="empty">—</div></div>
       </div>
 
       <table>
@@ -604,27 +259,21 @@
           </tr>
         </thead>
         <tbody id="summaryBody">
-          <tr>
-            <td colspan="3" class="empty">ยังไม่มีข้อมูล</td>
-          </tr>
+          <tr><td colspan="3" class="empty">ยังไม่มีข้อมูล</td></tr>
         </tbody>
       </table>
 
       <div class="recent">
         <div class="eyebrow">ล่าสุด</div>
-        <div id="recentList">
-          <div class="empty">—</div>
-        </div>
+        <div id="recentList"><div class="empty">—</div></div>
       </div>
     </div>
-
   </div>
 </div>
 
 <script>
   const GAS_URL = "https://script.google.com/macros/s/AKfycbx1-2DUwv_F_6lVJQODdGMZUS36LmoASOiSw_L9ARrDbhMUYj8dLZHPL4i4N6JakH4R/exec";
-
-  const STORAGE_KEY = "gymlatte_pending_orders_v1";
+  const STORAGE_KEY = "gymlatte_pending_orders_v2";
 
   const PRICES = {
     "Gym Latte": 99,
@@ -635,22 +284,21 @@
     "Gym Americano": 79
   };
 
-  const CHART_COLORS = [
-    "#3C2415",
-    "#B08655",
-    "#8A6A50",
-    "#6B8F71",
-    "#B5484D",
-    "#7A93A8"
-  ];
+  const CHART_COLORS = ["#3C2415", "#B08655", "#8A6A50", "#6B8F71", "#B5484D", "#7A93A8"];
 
   const menuSelect = document.getElementById("menuSelect");
+  const nonWheyCheck = document.getElementById("nonWheyCheck");
   const priceDisplay = document.getElementById("priceDisplay");
+  const previewMenu = document.getElementById("previewMenu");
+  const previewProtein = document.getElementById("previewProtein");
+  const previewPrice = document.getElementById("previewPrice");
   const saveBtn = document.getElementById("saveBtn");
   const toast = document.getElementById("toast");
   const refreshBtn = document.getElementById("refreshBtn");
   const totalCountEl = document.getElementById("totalCount");
   const totalAmountEl = document.getElementById("totalAmount");
+  const nonWheyCountEl = document.getElementById("nonWheyCount");
+  const wheyCountEl = document.getElementById("wheyCount");
   const summaryBody = document.getElementById("summaryBody");
   const recentList = document.getElementById("recentList");
   const clockEl = document.getElementById("clock");
@@ -658,68 +306,87 @@
   const legendEl = document.getElementById("legend");
   const syncStatus = document.getElementById("syncStatus");
 
-  function toNumber(value) {
+  function toNumber(value){
     const n = Number(value);
     return Number.isFinite(n) ? n : 0;
   }
 
-  function money(value) {
+  function money(value){
     return "฿" + toNumber(value).toLocaleString("th-TH");
   }
 
-  function configured() {
+  function configured(){
     return GAS_URL && GAS_URL.includes("script.google.com");
   }
 
-  function createId() {
-    if (window.crypto && crypto.randomUUID) {
-      return crypto.randomUUID();
-    }
-
+  function createId(){
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
     return "order_" + Date.now() + "_" + Math.random().toString(16).slice(2);
   }
 
-  function getPendingOrders() {
-    try {
+  function getProteinType(){
+    return nonWheyCheck.checked ? "Non-Whey" : "Whey";
+  }
+
+  function proteinBadgeClass(type){
+    return String(type).toLowerCase().includes("non") ? "nonwhey" : "whey";
+  }
+
+  function updateOrderPreview(){
+    const menu = menuSelect.value;
+    const price = PRICES[menu] || 0;
+    const proteinType = getProteinType();
+
+    priceDisplay.textContent = money(price);
+    previewMenu.textContent = menu;
+    previewProtein.textContent = proteinType;
+    previewProtein.className = "badge " + proteinBadgeClass(proteinType);
+    previewPrice.textContent = money(price);
+  }
+
+  function tickClock(){
+    const now = new Date();
+    clockEl.textContent = now.toLocaleTimeString("th-TH", {
+      hour:"2-digit",
+      minute:"2-digit",
+      second:"2-digit"
+    });
+  }
+
+  function getPendingOrders(){
+    try{
       const raw = localStorage.getItem(STORAGE_KEY);
       const parsed = JSON.parse(raw || "[]");
       return Array.isArray(parsed) ? parsed : [];
-    } catch (err) {
+    }catch(err){
       return [];
     }
   }
 
-  function setPendingOrders(orders) {
+  function setPendingOrders(orders){
     localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
     updateSyncStatus();
   }
 
-  function addPendingOrder(order) {
+  function addPendingOrder(order){
     const pending = getPendingOrders();
-
-    const exists = pending.some((item) => item.id === order.id);
-
-    if (!exists) {
+    if (!pending.some((item) => item.id === order.id)) {
       pending.push(order);
       setPendingOrders(pending);
     }
   }
 
-  function removePendingOrder(orderId) {
-    const pending = getPendingOrders().filter((item) => item.id !== orderId);
-    setPendingOrders(pending);
+  function removePendingOrder(orderId){
+    setPendingOrders(getPendingOrders().filter((item) => item.id !== orderId));
   }
 
-  function updateSyncStatus(mode) {
+  function updateSyncStatus(mode){
     const pendingCount = getPendingOrders().length;
-
     syncStatus.className = "sync-status";
 
     if (!navigator.onLine) {
       syncStatus.classList.add("offline");
-      syncStatus.textContent = pendingCount > 0
-        ? `ออฟไลน์ · รอส่ง ${pendingCount} รายการ`
-        : "ออฟไลน์";
+      syncStatus.textContent = pendingCount > 0 ? `ออฟไลน์ · รอส่ง ${pendingCount} รายการ` : "ออฟไลน์";
       return;
     }
 
@@ -739,193 +406,123 @@
     syncStatus.textContent = "พร้อมใช้งาน";
   }
 
-  function updatePrice() {
-    const price = PRICES[menuSelect.value] || 0;
-    priceDisplay.textContent = money(price);
-  }
-
-  function tickClock() {
-    const now = new Date();
-
-    clockEl.textContent = now.toLocaleTimeString("th-TH", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
-    });
-  }
-
-function pad2(n) {
-  return String(n).padStart(2, "0");
-}
-
-function formatRecentTime(value) {
-  if (value === null || value === undefined || value === "") return "";
-
-  // กรณี Google Sheets ส่งเวลาเป็นเลข เช่น 0.625 = 15:00
-  if (typeof value === "number") {
-    const totalMinutes = Math.round(value * 24 * 60);
-    const hours = Math.floor(totalMinutes / 60) % 24;
-    const minutes = totalMinutes % 60;
-    return `${pad2(hours)}:${pad2(minutes)}`;
-  }
-
-  const text = String(value).trim();
-
-  // กรณี Google Sheets ส่ง time-only กลับมาเป็น 1899-12-30T07:50:17.000Z
-  // ต้อง +7 ชั่วโมงกลับเป็นเวลาไทย
-  const sheetTimeMatch = text.match(/^1899-12-30T(\d{2}):(\d{2})(?::\d{2})?(?:\.\d+)?Z$/);
-
-  if (sheetTimeMatch) {
-    const hour = (Number(sheetTimeMatch[1]) + 7) % 24;
-    const minute = Number(sheetTimeMatch[2]);
-    return `${pad2(hour)}:${pad2(minute)}`;
-  }
-
-  // กรณีเป็นเวลาอยู่แล้ว เช่น 15:10 หรือ 15:10:00
-  const timeOnlyMatch = text.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
-
-  if (timeOnlyMatch) {
-    return `${pad2(timeOnlyMatch[1])}:${timeOnlyMatch[2]}`;
-  }
-
-  // กรณีเป็นวันที่จริง เช่น 2026-07-09T08:10:00.000Z
-  const date = new Date(text);
-
-  if (!Number.isNaN(date.getTime())) {
-    return date.toLocaleTimeString("th-TH", {
-      hour: "2-digit",
-      minute: "2-digit",
-      timeZone: "Asia/Bangkok"
-    });
-  }
-
-  // fallback สุดท้าย ดึง HH:mm จากข้อความ
-  const anyTimeMatch = text.match(/(\d{1,2}):(\d{2})/);
-
-  if (anyTimeMatch) {
-    return `${pad2(anyTimeMatch[1])}:${anyTimeMatch[2]}`;
-  }
-
-  return text;
-}
-  function cleanRecentItem(item) {
-    const menu = item?.menu || item?.Menu || "";
-    const rawPrice = item?.price ?? item?.Price ?? item?.amount ?? item?.Amount;
-    const price = toNumber(rawPrice) || PRICES[menu] || 0;
-    const rawTime = item?.time ?? item?.Time ?? item?.timestamp ?? item?.Timestamp ?? item?.createdAt;
-    const time = formatRecentTime(rawTime);
-
-    return {
-      menu,
-      price,
-      time
-    };
-  }
-
-  function normalizeEntries(summary) {
+  function normalizeEntries(summary){
     return Object.entries(summary || {})
-      .map(([menu, value]) => {
-        return [
-          menu,
-          {
-            count: toNumber(value && value.count),
-            amount: toNumber(value && value.amount)
-          }
-        ];
-      })
+      .map(([menu, value]) => [menu, {count:toNumber(value && value.count), amount:toNumber(value && value.amount)}])
       .filter(([, value]) => value.count > 0);
   }
 
-  function renderSummary(data = {}) {
+  function normalizeProteinStats(data, recent){
+    const stats = data.protein || data.proteinStats || {};
+    let whey = toNumber(stats.whey || stats.Whey);
+    let nonWhey = toNumber(stats.nonWhey || stats["Non-Whey"] || stats.nonwhey);
+
+    if (!whey && !nonWhey && Array.isArray(recent)) {
+      recent.forEach((item) => {
+        if (String(item.proteinType || "Whey").toLowerCase().includes("non")) nonWhey += 1;
+        else whey += 1;
+      });
+    }
+
+    return {whey, nonWhey};
+  }
+
+  function formatRecentTime(value){
+    if (value === null || value === undefined || value === "") return "";
+
+    if (typeof value === "number") {
+      return new Date(value).toLocaleTimeString("th-TH", {hour:"2-digit",minute:"2-digit",timeZone:"Asia/Bangkok"});
+    }
+
+    const text = String(value).trim();
+    const date = new Date(text);
+
+    if (!Number.isNaN(date.getTime()) && text.includes("T")) {
+      return date.toLocaleTimeString("th-TH", {hour:"2-digit",minute:"2-digit",timeZone:"Asia/Bangkok"});
+    }
+
+    const match = text.match(/(\d{1,2}):(\d{2})/);
+    if (match) return `${String(match[1]).padStart(2,"0")}:${match[2]}`;
+
+    return text;
+  }
+
+  function cleanRecentItem(item){
+    const menu = item?.menu || item?.Menu || "";
+    const rawPrice = item?.price ?? item?.Price ?? item?.amount ?? item?.Amount;
+    const price = toNumber(rawPrice) || PRICES[menu] || 0;
+    const proteinType = item?.proteinType || item?.ProteinType || "Whey";
+    const rawTime = item?.time ?? item?.Time ?? item?.timestamp ?? item?.Timestamp ?? item?.createdAt;
+
+    return {menu, price, proteinType, time:formatRecentTime(rawTime)};
+  }
+
+  function renderSummary(data = {}){
     const entries = normalizeEntries(data.summary);
-
-    const calculatedCount = entries.reduce((sum, [, value]) => {
-      return sum + value.count;
-    }, 0);
-
-    const calculatedAmount = entries.reduce((sum, [, value]) => {
-      return sum + value.amount;
-    }, 0);
-
+    const calculatedCount = entries.reduce((sum, [, value]) => sum + value.count, 0);
+    const calculatedAmount = entries.reduce((sum, [, value]) => sum + value.amount, 0);
     const totalCount = toNumber(data.totalCount) || calculatedCount;
     const totalAmount = toNumber(data.totalAmount) || calculatedAmount;
 
+    const rawRecent = Array.isArray(data.recent) ? data.recent : [];
+    const recent = rawRecent.map(cleanRecentItem).filter((item) => item.menu && item.price > 0).slice(0, 8);
+    const proteinStats = normalizeProteinStats(data, rawRecent);
+
     totalCountEl.textContent = totalCount.toLocaleString("th-TH");
     totalAmountEl.textContent = money(totalAmount);
+    nonWheyCountEl.textContent = proteinStats.nonWhey.toLocaleString("th-TH");
+    wheyCountEl.textContent = proteinStats.whey.toLocaleString("th-TH");
 
     if (entries.length === 0) {
       summaryBody.innerHTML = '<tr><td colspan="3" class="empty">ยังไม่มีข้อมูล</td></tr>';
     } else {
       summaryBody.innerHTML = [...entries]
-        .sort((a, b) => b[1].count - a[1].count)
-        .map(([menu, value]) => {
-          return `
-            <tr>
-              <td class="menu">${menu}</td>
-              <td class="num">${value.count.toLocaleString("th-TH")}</td>
-              <td class="num">${money(value.amount)}</td>
-            </tr>
-          `;
-        })
-        .join("");
+        .sort((a,b) => b[1].count - a[1].count)
+        .map(([menu, value]) => `
+          <tr>
+            <td class="menu">${menu}</td>
+            <td class="num">${value.count.toLocaleString("th-TH")}</td>
+            <td class="num">${money(value.amount)}</td>
+          </tr>
+        `).join("");
     }
 
     renderChart(entries);
 
-    const recent = (Array.isArray(data.recent) ? data.recent : [])
-      .map(cleanRecentItem)
-      .filter((item) => item.menu && item.price > 0)
-      .slice(0, 8);
-
     if (recent.length === 0) {
       recentList.innerHTML = '<div class="empty">—</div>';
     } else {
-      recentList.innerHTML = recent
-        .map((item) => {
-          const timeText = item.time ? `${item.time} · ` : "";
-
-          return `
-            <div class="recent-item">
+      recentList.innerHTML = recent.map((item) => {
+        const timeText = item.time ? `${item.time} · ` : "";
+        const cls = proteinBadgeClass(item.proteinType);
+        return `
+          <div class="recent-item">
+            <div class="recent-left">
               <span class="m">${item.menu}</span>
-              <span class="t">${timeText}${money(item.price)}</span>
+              <span class="badge ${cls}">${item.proteinType}</span>
             </div>
-          `;
-        })
-        .join("");
+            <span class="t">${timeText}${money(item.price)}</span>
+          </div>
+        `;
+      }).join("");
     }
   }
 
-  function polarToCartesian(cx, cy, r, angleDeg) {
+  function polarToCartesian(cx, cy, r, angleDeg){
     const angleRad = (angleDeg - 90) * Math.PI / 180;
-
-    return {
-      x: cx + r * Math.cos(angleRad),
-      y: cy + r * Math.sin(angleRad)
-    };
+    return {x:cx + r * Math.cos(angleRad), y:cy + r * Math.sin(angleRad)};
   }
 
-  function describeSlice(cx, cy, r, startAngle, endAngle) {
+  function describeSlice(cx, cy, r, startAngle, endAngle){
     const start = polarToCartesian(cx, cy, r, endAngle);
     const end = polarToCartesian(cx, cy, r, startAngle);
     const largeArcFlag = endAngle - startAngle <= 180 ? 0 : 1;
-
-    return [
-      `M ${cx} ${cy}`,
-      `L ${start.x} ${start.y}`,
-      `A ${r} ${r} 0 ${largeArcFlag} 0 ${end.x} ${end.y}`,
-      "Z"
-    ].join(" ");
+    return [`M ${cx} ${cy}`, `L ${start.x} ${start.y}`, `A ${r} ${r} 0 ${largeArcFlag} 0 ${end.x} ${end.y}`, "Z"].join(" ");
   }
 
-  function renderChart(entries) {
-    const sorted = [...entries]
-      .filter(([, value]) => value.count > 0)
-      .sort((a, b) => b[1].count - a[1].count);
-
-    const chartTotal = sorted.reduce((sum, [, value]) => {
-      return sum + toNumber(value.count);
-    }, 0);
-
+  function renderChart(entries){
+    const sorted = [...entries].filter(([, value]) => value.count > 0).sort((a,b) => b[1].count - a[1].count);
+    const chartTotal = sorted.reduce((sum, [, value]) => sum + toNumber(value.count), 0);
     chartSvg.innerHTML = "";
 
     if (sorted.length === 0 || chartTotal <= 0) {
@@ -934,10 +531,7 @@ function formatRecentTime(value) {
     }
 
     const NS = "http://www.w3.org/2000/svg";
-    const cx = 75;
-    const cy = 75;
-    const r = 60;
-
+    const cx = 75, cy = 75, r = 60;
     let angle = 0;
 
     sorted.forEach(([menu, value], index) => {
@@ -969,69 +563,54 @@ function formatRecentTime(value) {
     hole.setAttribute("fill", "#FBF7F2");
     chartSvg.appendChild(hole);
 
-    legendEl.innerHTML = sorted
-      .map(([menu, value], index) => {
-        const color = CHART_COLORS[index % CHART_COLORS.length];
-        const pct = Math.round((toNumber(value.count) / chartTotal) * 100);
-
-        return `
-          <div class="legend-item">
-            <span class="dot" style="background:${color}"></span>
-            <span class="name">${menu}</span>
-            <span class="pct">${pct}%</span>
-          </div>
-        `;
-      })
-      .join("");
+    legendEl.innerHTML = sorted.map(([menu, value], index) => {
+      const color = CHART_COLORS[index % CHART_COLORS.length];
+      const pct = Math.round((toNumber(value.count) / chartTotal) * 100);
+      return `
+        <div class="legend-item">
+          <span class="dot" style="background:${color}"></span>
+          <span class="name">${menu}</span>
+          <span class="pct">${pct}%</span>
+        </div>
+      `;
+    }).join("");
   }
 
-  async function postOrder(order) {
+  async function postOrder(order){
     const payload = {
-      menu: order.menu,
-      price: order.price,
-      clientOrderId: order.id,
-      createdAt: order.createdAt
+      menu:order.menu,
+      price:order.price,
+      proteinType:order.proteinType,
+      clientOrderId:order.id,
+      createdAt:order.createdAt
     };
 
     const res = await fetch(GAS_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-      },
-      body: JSON.stringify(payload)
+      method:"POST",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify(payload)
     });
 
-    if (!res.ok) {
-      throw new Error("Save failed");
-    }
-
+    if (!res.ok) throw new Error("Save failed");
     return true;
   }
 
-  async function syncPendingOrders() {
+  async function syncPendingOrders(){
     if (!configured()) return;
-    if (!navigator.onLine) {
-      updateSyncStatus();
-      return;
-    }
+    if (!navigator.onLine) {updateSyncStatus();return;}
 
-    let pending = getPendingOrders();
-
-    if (pending.length === 0) {
-      updateSyncStatus();
-      return;
-    }
+    const pending = getPendingOrders();
+    if (pending.length === 0) {updateSyncStatus();return;}
 
     updateSyncStatus("syncing");
-
     let synced = 0;
 
     for (const order of pending) {
-      try {
+      try{
         await postOrder(order);
         removePendingOrder(order.id);
         synced += 1;
-      } catch (err) {
+      }catch(err){
         console.error("Sync failed", err);
         break;
       }
@@ -1042,36 +621,30 @@ function formatRecentTime(value) {
     if (synced > 0) {
       toast.classList.remove("err");
       toast.classList.add("ok");
-      toast.textContent = `sync รายการค้างแล้ว ${synced} รายการ`;
-
+      toast.innerHTML = `sync รายการค้างแล้ว ${synced} รายการ`;
       await loadSummary();
     }
   }
 
-  async function loadSummary() {
+  async function loadSummary(){
     if (!configured()) {
       toast.textContent = "ยังไม่ได้ตั้งค่า GAS_URL";
       toast.classList.add("err");
       return;
     }
 
-    try {
-      const res = await fetch(GAS_URL, {
-        method: "GET",
-        cache: "no-store"
-      });
-
+    try{
+      const res = await fetch(GAS_URL, {method:"GET", cache:"no-store"});
       const text = await res.text();
       const data = JSON.parse(text);
-
       renderSummary(data);
-    } catch (err) {
+    }catch(err){
       console.error(err);
       legendEl.innerHTML = '<div class="empty">โหลดข้อมูลไม่ได้</div>';
     }
   }
 
-  async function saveOrder() {
+  async function saveOrder(){
     if (!configured()) {
       toast.textContent = "ยังไม่ได้ตั้งค่า GAS_URL";
       toast.classList.add("err");
@@ -1080,83 +653,69 @@ function formatRecentTime(value) {
 
     const menu = menuSelect.value;
     const price = PRICES[menu] || 0;
+    const proteinType = getProteinType();
 
     const order = {
-      id: createId(),
+      id:createId(),
       menu,
       price,
-      createdAt: new Date().toISOString()
+      proteinType,
+      createdAt:new Date().toISOString()
     };
 
     saveBtn.disabled = true;
     saveBtn.textContent = "กำลังบันทึก...";
     saveBtn.classList.remove("saved", "pending");
-
     toast.classList.remove("err", "ok");
     toast.textContent = "";
 
+    const orderText = `${menu} · ${proteinType} · ${money(price)}`;
+
     if (!navigator.onLine) {
       addPendingOrder(order);
-
       saveBtn.classList.add("pending");
       saveBtn.textContent = "เก็บไว้แล้ว";
       toast.classList.add("err");
-      toast.textContent = `เน็ตหลุด — เก็บ ${menu} ไว้ในเครื่องแล้ว รอ sync`;
-
-      setTimeout(() => {
-        saveBtn.disabled = false;
-        saveBtn.classList.remove("pending");
-        saveBtn.textContent = "บันทึกการขาย";
-      }, 900);
-
+      toast.innerHTML = `เน็ตหลุด — เก็บไว้ในเครื่องแล้ว<br>${orderText}<br>รอ sync เมื่อเน็ตกลับมา`;
+      setTimeout(resetSaveButton, 900);
       return;
     }
 
-    try {
+    try{
       await postOrder(order);
-
       saveBtn.classList.add("saved");
       saveBtn.textContent = "บันทึกแล้ว ✓";
-
       toast.classList.add("ok");
-      toast.textContent = `บันทึก ${menu} ${money(price)} เรียบร้อย`;
-
+      toast.innerHTML = `บันทึกแล้ว ✓<br>${orderText}`;
       await syncPendingOrders();
       await loadSummary();
-    } catch (err) {
+    }catch(err){
       console.error(err);
-
       addPendingOrder(order);
-
       saveBtn.classList.add("pending");
       saveBtn.textContent = "เก็บไว้แล้ว";
-
       toast.classList.add("err");
-      toast.textContent = `ส่งไม่สำเร็จ — เก็บ ${menu} ไว้ในเครื่องแล้ว รอ sync`;
-    } finally {
-      setTimeout(() => {
-        saveBtn.disabled = false;
-        saveBtn.classList.remove("saved", "pending");
-        saveBtn.textContent = "บันทึกการขาย";
-      }, 900);
+      toast.innerHTML = `ส่งไม่สำเร็จ — เก็บไว้ในเครื่องแล้ว<br>${orderText}<br>รอ sync เมื่อเน็ตกลับมา`;
+    }finally{
+      setTimeout(resetSaveButton, 900);
     }
   }
 
-  const tabBtns = document.querySelectorAll(".tab-btn");
+  function resetSaveButton(){
+    saveBtn.disabled = false;
+    saveBtn.classList.remove("saved", "pending");
+    saveBtn.textContent = "บันทึกการขาย";
+  }
 
-  const views = {
-    order: document.getElementById("view-order"),
-    summary: document.getElementById("view-summary")
-  };
+  const tabBtns = document.querySelectorAll(".tab-btn");
+  const views = {order:document.getElementById("view-order"), summary:document.getElementById("view-summary")};
 
   tabBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
       tabBtns.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
-
       Object.values(views).forEach((view) => view.classList.remove("active"));
       views[btn.dataset.tab].classList.add("active");
-
       if (btn.dataset.tab === "summary") {
         syncPendingOrders();
         loadSummary();
@@ -1164,28 +723,19 @@ function formatRecentTime(value) {
     });
   });
 
-  menuSelect.addEventListener("change", updatePrice);
+  menuSelect.addEventListener("change", updateOrderPreview);
+  nonWheyCheck.addEventListener("change", updateOrderPreview);
   saveBtn.addEventListener("click", saveOrder);
-  refreshBtn.addEventListener("click", () => {
-    syncPendingOrders();
-    loadSummary();
-  });
-
-  window.addEventListener("online", () => {
-    updateSyncStatus();
-    syncPendingOrders();
-  });
-
+  refreshBtn.addEventListener("click", () => {syncPendingOrders();loadSummary();});
+  window.addEventListener("online", () => {updateSyncStatus();syncPendingOrders();});
   window.addEventListener("offline", updateSyncStatus);
 
-  updatePrice();
+  updateOrderPreview();
   tickClock();
   setInterval(tickClock, 1000);
-
   updateSyncStatus();
   syncPendingOrders();
   loadSummary();
 </script>
-
 </body>
 </html>
