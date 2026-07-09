@@ -18,7 +18,9 @@
     --accent:#B08655;
     --accent-soft:#F3E9DC;
     --success:#6B8F71;
+    --success-soft:#EAF1EB;
     --danger:#B5484D;
+    --danger-soft:#F8E8E8;
   }
 
   *,*::before,*::after{
@@ -72,7 +74,7 @@
     display:none;
     font-size:34px;
     font-weight:700;
-    letter-spacing:0.04em;
+    letter-spacing:0.02em;
     color:var(--brown);
   }
 
@@ -81,13 +83,37 @@
     letter-spacing:0.18em;
     text-transform:uppercase;
     color:var(--brown-soft);
-    font-weight:500;
+    font-weight:600;
   }
 
   .clock{
     font-family:'DM Mono',monospace;
     font-size:13px;
     color:var(--brown-soft);
+  }
+
+  .sync-status{
+    font-size:11px;
+    padding:5px 10px;
+    border-radius:999px;
+    color:var(--brown-soft);
+    background:var(--accent-soft);
+  }
+
+  .sync-status.ok{
+    color:var(--success);
+    background:var(--success-soft);
+  }
+
+  .sync-status.offline,
+  .sync-status.pending{
+    color:var(--danger);
+    background:var(--danger-soft);
+  }
+
+  .sync-status.syncing{
+    color:var(--accent);
+    background:var(--accent-soft);
   }
 
   .tabs{
@@ -239,6 +265,10 @@
     background:var(--success);
   }
 
+  .save-btn.pending{
+    background:var(--accent);
+  }
+
   .toast{
     margin-top:14px;
     font-size:13px;
@@ -249,6 +279,10 @@
 
   .toast.err{
     color:var(--danger);
+  }
+
+  .toast.ok{
+    color:var(--success);
   }
 
   .panel-head{
@@ -416,22 +450,29 @@
   }
 
   .recent-item{
-    display:flex;
-    justify-content:space-between;
-    gap:12px;
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:14px;
+    align-items:center;
     font-size:13px;
-    padding:8px 0;
+    padding:10px 0;
     border-bottom:1px solid var(--line);
     color:var(--brown-soft);
   }
 
   .recent-item .m{
     color:var(--brown);
+    font-weight:500;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
   }
 
   .recent-item .t{
     font-family:'DM Mono',monospace;
     white-space:nowrap;
+    text-align:right;
   }
 
   @media (max-width: 520px){
@@ -490,11 +531,12 @@
   <div class="topbar">
     <div class="brand">
       <img src="logo.png" alt="Gym Latte" onerror="this.style.display='none'; document.querySelector('.brand-text').style.display='block';">
-      <div class="brand-text">GYM LATTE</div>
-      <div class="sub">Point of&nbsp;Sale</div>
+      <div class="brand-text">Gym Latte</div>
+      <div class="sub">Point of Sale</div>
     </div>
 
     <div class="clock" id="clock">--:--:--</div>
+    <div class="sync-status ok" id="syncStatus">พร้อมใช้งาน</div>
   </div>
 
   <div class="tabs">
@@ -580,8 +622,9 @@
 </div>
 
 <script>
-  // Google Apps Script Web App URL
   const GAS_URL = "https://script.google.com/macros/s/AKfycbxskfdIdkzpw2yZrGJGAC1UlnkTEhvAA_N90cgbNCN_p6Kt7gFVc_g-GS5vhcov2SF_/exec";
+
+  const STORAGE_KEY = "gymlatte_pending_orders_v1";
 
   const PRICES = {
     "Gym Latte": 99,
@@ -592,55 +635,160 @@
     "Gym Americano": 79
   };
 
-  const menuSelect = document.getElementById('menuSelect');
-  const priceDisplay = document.getElementById('priceDisplay');
-  const saveBtn = document.getElementById('saveBtn');
-  const toast = document.getElementById('toast');
-  const refreshBtn = document.getElementById('refreshBtn');
-  const totalCountEl = document.getElementById('totalCount');
-  const totalAmountEl = document.getElementById('totalAmount');
-  const summaryBody = document.getElementById('summaryBody');
-  const recentList = document.getElementById('recentList');
-  const clockEl = document.getElementById('clock');
-  const chartSvg = document.getElementById('pieChart');
-  const legendEl = document.getElementById('legend');
-
   const CHART_COLORS = [
-    '#3C2415',
-    '#B08655',
-    '#8A6A50',
-    '#6B8F71',
-    '#B5484D',
-    '#7A93A8'
+    "#3C2415",
+    "#B08655",
+    "#8A6A50",
+    "#6B8F71",
+    "#B5484D",
+    "#7A93A8"
   ];
+
+  const menuSelect = document.getElementById("menuSelect");
+  const priceDisplay = document.getElementById("priceDisplay");
+  const saveBtn = document.getElementById("saveBtn");
+  const toast = document.getElementById("toast");
+  const refreshBtn = document.getElementById("refreshBtn");
+  const totalCountEl = document.getElementById("totalCount");
+  const totalAmountEl = document.getElementById("totalAmount");
+  const summaryBody = document.getElementById("summaryBody");
+  const recentList = document.getElementById("recentList");
+  const clockEl = document.getElementById("clock");
+  const chartSvg = document.getElementById("pieChart");
+  const legendEl = document.getElementById("legend");
+  const syncStatus = document.getElementById("syncStatus");
 
   function toNumber(value) {
     const n = Number(value);
     return Number.isFinite(n) ? n : 0;
   }
 
-  function updatePrice() {
-    const price = PRICES[menuSelect.value] || 0;
-    priceDisplay.textContent = '฿' + price;
+  function money(value) {
+    return "฿" + toNumber(value).toLocaleString("th-TH");
   }
 
-  menuSelect.addEventListener('change', updatePrice);
-  updatePrice();
+  function configured() {
+    return GAS_URL && GAS_URL.includes("script.google.com");
+  }
+
+  function createId() {
+    if (window.crypto && crypto.randomUUID) {
+      return crypto.randomUUID();
+    }
+
+    return "order_" + Date.now() + "_" + Math.random().toString(16).slice(2);
+  }
+
+  function getPendingOrders() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const parsed = JSON.parse(raw || "[]");
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (err) {
+      return [];
+    }
+  }
+
+  function setPendingOrders(orders) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
+    updateSyncStatus();
+  }
+
+  function addPendingOrder(order) {
+    const pending = getPendingOrders();
+
+    const exists = pending.some((item) => item.id === order.id);
+
+    if (!exists) {
+      pending.push(order);
+      setPendingOrders(pending);
+    }
+  }
+
+  function removePendingOrder(orderId) {
+    const pending = getPendingOrders().filter((item) => item.id !== orderId);
+    setPendingOrders(pending);
+  }
+
+  function updateSyncStatus(mode) {
+    const pendingCount = getPendingOrders().length;
+
+    syncStatus.className = "sync-status";
+
+    if (!navigator.onLine) {
+      syncStatus.classList.add("offline");
+      syncStatus.textContent = pendingCount > 0
+        ? `ออฟไลน์ · รอส่ง ${pendingCount} รายการ`
+        : "ออฟไลน์";
+      return;
+    }
+
+    if (mode === "syncing") {
+      syncStatus.classList.add("syncing");
+      syncStatus.textContent = "กำลัง sync...";
+      return;
+    }
+
+    if (pendingCount > 0) {
+      syncStatus.classList.add("pending");
+      syncStatus.textContent = `รอส่ง ${pendingCount} รายการ`;
+      return;
+    }
+
+    syncStatus.classList.add("ok");
+    syncStatus.textContent = "พร้อมใช้งาน";
+  }
+
+  function updatePrice() {
+    const price = PRICES[menuSelect.value] || 0;
+    priceDisplay.textContent = money(price);
+  }
 
   function tickClock() {
     const now = new Date();
-    clockEl.textContent = now.toLocaleTimeString('th-TH', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
+
+    clockEl.textContent = now.toLocaleTimeString("th-TH", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
     });
   }
 
-  tickClock();
-  setInterval(tickClock, 1000);
+  function formatRecentTime(value) {
+    if (!value) return "";
 
-  function configured() {
-    return GAS_URL && GAS_URL.includes('script.google.com');
+    const date = new Date(value);
+
+    if (!Number.isNaN(date.getTime())) {
+      return date.toLocaleTimeString("th-TH", {
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "Asia/Bangkok"
+      });
+    }
+
+    const text = String(value);
+    const match = text.match(/(\d{1,2}):(\d{2})/);
+
+    if (match) {
+      return `${match[1].padStart(2, "0")}:${match[2]}`;
+    }
+
+    return text;
+  }
+
+  function cleanRecentItem(item) {
+    const menu = item?.menu || item?.Menu || "";
+    const rawPrice = item?.price ?? item?.Price ?? item?.amount ?? item?.Amount;
+    const price = toNumber(rawPrice) || PRICES[menu] || 0;
+    const rawTime = item?.time ?? item?.Time ?? item?.timestamp ?? item?.Timestamp ?? item?.createdAt;
+    const time = formatRecentTime(rawTime);
+
+    return {
+      menu,
+      price,
+      time
+    };
   }
 
   function normalizeEntries(summary) {
@@ -671,8 +819,8 @@
     const totalCount = toNumber(data.totalCount) || calculatedCount;
     const totalAmount = toNumber(data.totalAmount) || calculatedAmount;
 
-    totalCountEl.textContent = totalCount.toLocaleString('th-TH');
-    totalAmountEl.textContent = '฿' + totalAmount.toLocaleString('th-TH');
+    totalCountEl.textContent = totalCount.toLocaleString("th-TH");
+    totalAmountEl.textContent = money(totalAmount);
 
     if (entries.length === 0) {
       summaryBody.innerHTML = '<tr><td colspan="3" class="empty">ยังไม่มีข้อมูล</td></tr>';
@@ -683,35 +831,36 @@
           return `
             <tr>
               <td class="menu">${menu}</td>
-              <td class="num">${value.count.toLocaleString('th-TH')}</td>
-              <td class="num">฿${value.amount.toLocaleString('th-TH')}</td>
+              <td class="num">${value.count.toLocaleString("th-TH")}</td>
+              <td class="num">${money(value.amount)}</td>
             </tr>
           `;
         })
-        .join('');
+        .join("");
     }
 
-    renderChart(entries, totalCount);
+    renderChart(entries);
 
-    const recent = Array.isArray(data.recent) ? data.recent : [];
+    const recent = (Array.isArray(data.recent) ? data.recent : [])
+      .map(cleanRecentItem)
+      .filter((item) => item.menu && item.price > 0)
+      .slice(0, 8);
 
     if (recent.length === 0) {
       recentList.innerHTML = '<div class="empty">—</div>';
     } else {
       recentList.innerHTML = recent
         .map((item) => {
-          const menu = item.menu || '-';
-          const time = item.time || '';
-          const price = toNumber(item.price);
+          const timeText = item.time ? `${item.time} · ` : "";
 
           return `
             <div class="recent-item">
-              <span class="m">${menu}</span>
-              <span class="t">${time} · ฿${price.toLocaleString('th-TH')}</span>
+              <span class="m">${item.menu}</span>
+              <span class="t">${timeText}${money(item.price)}</span>
             </div>
           `;
         })
-        .join('');
+        .join("");
     }
   }
 
@@ -733,27 +882,27 @@
       `M ${cx} ${cy}`,
       `L ${start.x} ${start.y}`,
       `A ${r} ${r} 0 ${largeArcFlag} 0 ${end.x} ${end.y}`,
-      'Z'
-    ].join(' ');
+      "Z"
+    ].join(" ");
   }
 
-  function renderChart(entries, totalCount) {
+  function renderChart(entries) {
     const sorted = [...entries]
       .filter(([, value]) => value.count > 0)
       .sort((a, b) => b[1].count - a[1].count);
 
-    const safeTotal = toNumber(totalCount) || sorted.reduce((sum, [, value]) => {
+    const chartTotal = sorted.reduce((sum, [, value]) => {
       return sum + toNumber(value.count);
     }, 0);
 
-    chartSvg.innerHTML = '';
+    chartSvg.innerHTML = "";
 
-    if (sorted.length === 0 || safeTotal <= 0) {
+    if (sorted.length === 0 || chartTotal <= 0) {
       legendEl.innerHTML = '<div class="empty">—</div>';
       return;
     }
 
-    const NS = 'http://www.w3.org/2000/svg';
+    const NS = "http://www.w3.org/2000/svg";
     const cx = 75;
     const cy = 75;
     const r = 60;
@@ -761,38 +910,38 @@
     let angle = 0;
 
     sorted.forEach(([menu, value], index) => {
-      const fraction = toNumber(value.count) / safeTotal;
+      const fraction = toNumber(value.count) / chartTotal;
       const degrees = fraction * 360;
       const color = CHART_COLORS[index % CHART_COLORS.length];
 
       if (fraction >= 0.9999) {
-        const circle = document.createElementNS(NS, 'circle');
-        circle.setAttribute('cx', cx);
-        circle.setAttribute('cy', cy);
-        circle.setAttribute('r', r);
-        circle.setAttribute('fill', color);
+        const circle = document.createElementNS(NS, "circle");
+        circle.setAttribute("cx", cx);
+        circle.setAttribute("cy", cy);
+        circle.setAttribute("r", r);
+        circle.setAttribute("fill", color);
         chartSvg.appendChild(circle);
       } else {
-        const path = document.createElementNS(NS, 'path');
-        path.setAttribute('d', describeSlice(cx, cy, r, angle, angle + degrees));
-        path.setAttribute('fill', color);
+        const path = document.createElementNS(NS, "path");
+        path.setAttribute("d", describeSlice(cx, cy, r, angle, angle + degrees));
+        path.setAttribute("fill", color);
         chartSvg.appendChild(path);
       }
 
       angle += degrees;
     });
 
-    const hole = document.createElementNS(NS, 'circle');
-    hole.setAttribute('cx', cx);
-    hole.setAttribute('cy', cy);
-    hole.setAttribute('r', 32);
-    hole.setAttribute('fill', '#FBF7F2');
+    const hole = document.createElementNS(NS, "circle");
+    hole.setAttribute("cx", cx);
+    hole.setAttribute("cy", cy);
+    hole.setAttribute("r", 32);
+    hole.setAttribute("fill", "#FBF7F2");
     chartSvg.appendChild(hole);
 
     legendEl.innerHTML = sorted
       .map(([menu, value], index) => {
         const color = CHART_COLORS[index % CHART_COLORS.length];
-        const pct = Math.round((toNumber(value.count) / safeTotal) * 100);
+        const pct = Math.round((toNumber(value.count) / chartTotal) * 100);
 
         return `
           <div class="legend-item">
@@ -802,22 +951,88 @@
           </div>
         `;
       })
-      .join('');
+      .join("");
+  }
+
+  async function postOrder(order) {
+    const payload = {
+      menu: order.menu,
+      price: order.price,
+      clientOrderId: order.id,
+      createdAt: order.createdAt
+    };
+
+    const res = await fetch(GAS_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      throw new Error("Save failed");
+    }
+
+    return true;
+  }
+
+  async function syncPendingOrders() {
+    if (!configured()) return;
+    if (!navigator.onLine) {
+      updateSyncStatus();
+      return;
+    }
+
+    let pending = getPendingOrders();
+
+    if (pending.length === 0) {
+      updateSyncStatus();
+      return;
+    }
+
+    updateSyncStatus("syncing");
+
+    let synced = 0;
+
+    for (const order of pending) {
+      try {
+        await postOrder(order);
+        removePendingOrder(order.id);
+        synced += 1;
+      } catch (err) {
+        console.error("Sync failed", err);
+        break;
+      }
+    }
+
+    updateSyncStatus();
+
+    if (synced > 0) {
+      toast.classList.remove("err");
+      toast.classList.add("ok");
+      toast.textContent = `sync รายการค้างแล้ว ${synced} รายการ`;
+
+      await loadSummary();
+    }
   }
 
   async function loadSummary() {
     if (!configured()) {
-      toast.textContent = 'ยังไม่ได้ตั้งค่า GAS_URL';
-      toast.classList.add('err');
+      toast.textContent = "ยังไม่ได้ตั้งค่า GAS_URL";
+      toast.classList.add("err");
       return;
     }
 
     try {
       const res = await fetch(GAS_URL, {
-        method: 'GET'
+        method: "GET",
+        cache: "no-store"
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      const data = JSON.parse(text);
+
       renderSummary(data);
     } catch (err) {
       console.error(err);
@@ -827,74 +1042,117 @@
 
   async function saveOrder() {
     if (!configured()) {
-      toast.textContent = 'ยังไม่ได้ตั้งค่า GAS_URL';
-      toast.classList.add('err');
+      toast.textContent = "ยังไม่ได้ตั้งค่า GAS_URL";
+      toast.classList.add("err");
       return;
     }
 
     const menu = menuSelect.value;
     const price = PRICES[menu] || 0;
 
-    saveBtn.disabled = true;
-    saveBtn.textContent = 'กำลังบันทึก...';
+    const order = {
+      id: createId(),
+      menu,
+      price,
+      createdAt: new Date().toISOString()
+    };
 
-    toast.classList.remove('err');
-    toast.textContent = '';
+    saveBtn.disabled = true;
+    saveBtn.textContent = "กำลังบันทึก...";
+    saveBtn.classList.remove("saved", "pending");
+
+    toast.classList.remove("err", "ok");
+    toast.textContent = "";
+
+    if (!navigator.onLine) {
+      addPendingOrder(order);
+
+      saveBtn.classList.add("pending");
+      saveBtn.textContent = "เก็บไว้แล้ว";
+      toast.classList.add("err");
+      toast.textContent = `เน็ตหลุด — เก็บ ${menu} ไว้ในเครื่องแล้ว รอ sync`;
+
+      setTimeout(() => {
+        saveBtn.disabled = false;
+        saveBtn.classList.remove("pending");
+        saveBtn.textContent = "บันทึกการขาย";
+      }, 900);
+
+      return;
+    }
 
     try {
-      await fetch(GAS_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8'
-        },
-        body: JSON.stringify({
-          menu,
-          price
-        })
-      });
+      await postOrder(order);
 
-      saveBtn.classList.add('saved');
-      saveBtn.textContent = 'บันทึกแล้ว ✓';
-      toast.textContent = `บันทึก ${menu} ฿${price} เรียบร้อย`;
+      saveBtn.classList.add("saved");
+      saveBtn.textContent = "บันทึกแล้ว ✓";
 
+      toast.classList.add("ok");
+      toast.textContent = `บันทึก ${menu} ${money(price)} เรียบร้อย`;
+
+      await syncPendingOrders();
       await loadSummary();
     } catch (err) {
       console.error(err);
-      toast.textContent = 'บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง';
-      toast.classList.add('err');
+
+      addPendingOrder(order);
+
+      saveBtn.classList.add("pending");
+      saveBtn.textContent = "เก็บไว้แล้ว";
+
+      toast.classList.add("err");
+      toast.textContent = `ส่งไม่สำเร็จ — เก็บ ${menu} ไว้ในเครื่องแล้ว รอ sync`;
     } finally {
       setTimeout(() => {
         saveBtn.disabled = false;
-        saveBtn.classList.remove('saved');
-        saveBtn.textContent = 'บันทึกการขาย';
+        saveBtn.classList.remove("saved", "pending");
+        saveBtn.textContent = "บันทึกการขาย";
       }, 900);
     }
   }
 
-  saveBtn.addEventListener('click', saveOrder);
-  refreshBtn.addEventListener('click', loadSummary);
-
-  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabBtns = document.querySelectorAll(".tab-btn");
 
   const views = {
-    order: document.getElementById('view-order'),
-    summary: document.getElementById('view-summary')
+    order: document.getElementById("view-order"),
+    summary: document.getElementById("view-summary")
   };
 
   tabBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      tabBtns.forEach((b) => b.classList.remove('active'));
-      btn.classList.add('active');
+    btn.addEventListener("click", () => {
+      tabBtns.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
 
-      Object.values(views).forEach((view) => view.classList.remove('active'));
-      views[btn.dataset.tab].classList.add('active');
+      Object.values(views).forEach((view) => view.classList.remove("active"));
+      views[btn.dataset.tab].classList.add("active");
 
-      if (btn.dataset.tab === 'summary') {
+      if (btn.dataset.tab === "summary") {
+        syncPendingOrders();
         loadSummary();
       }
     });
   });
 
+  menuSelect.addEventListener("change", updatePrice);
+  saveBtn.addEventListener("click", saveOrder);
+  refreshBtn.addEventListener("click", () => {
+    syncPendingOrders();
+    loadSummary();
+  });
+
+  window.addEventListener("online", () => {
+    updateSyncStatus();
+    syncPendingOrders();
+  });
+
+  window.addEventListener("offline", updateSyncStatus);
+
+  updatePrice();
+  tickClock();
+  setInterval(tickClock, 1000);
+
+  updateSyncStatus();
+  syncPendingOrders();
   loadSummary();
 </script>
 
